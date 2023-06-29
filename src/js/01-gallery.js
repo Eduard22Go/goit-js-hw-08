@@ -9,53 +9,27 @@ import { galleryItems } from './gallery-items';
 
 console.log(galleryItems);
 
-// Створення розмітки
-const galleryContainer = document.querySelector('.js-gallery');
+const galleryContainer = document.querySelector('.gallery');
 
 createGalleryItemsMarkup();
 
 function createGalleryItemsMarkup() {
   const markup = galleryItems
     .map(({ preview, original, description }) => {
-      return `<div class="gallery__item">
-  <a class="gallery__link" href="${original}">
+      return `<a class="gallery__item" href="${original}">
     <img
       class="gallery__image"
       src="${preview}"
-      data-source="${original}"
       alt="${description}"
     />
-  </a>
-</div>`;
+  </a>`;
     })
     .join('');
 
   galleryContainer.insertAdjacentHTML('beforeend', markup);
 }
 
-galleryContainer.addEventListener('click', onImageClick);
-
-function onImageClick(event) {
-  event.preventDefault();
-  if (event.target.nodeName !== 'IMG') {
-    return;
-  }
-  const onImageShow = basicLightbox.create(`<img src="${event.target.dataset.source}">`, {
-    onShow: onImageShow => {
-      document.addEventListener('keydown', onEscapeKeyPress);
-    },
-
-    onClose: onImageShow => {
-      document.removeEventListener('keydown', onEscapeKeyPress);
-    },
-  });
-
-  onImageShow.show();
-
-  function onEscapeKeyPress(event) {
-    if (event.code !== 'Escape') {
-      return;
-    }
-    onImageShow.close();
-  }
-}
+new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
